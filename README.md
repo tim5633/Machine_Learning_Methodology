@@ -1,94 +1,118 @@
 # Machine Learning Methodology: Modeling + Experimental Design
 
-This repository extends a classic ML modeling workflow into an **experimentation framework** with A/B testing and statistical inference.
+This repository presents a machine learning workflow extended with an experimentation layer for statistically defensible decision-making.
 
-## Project Positioning
+## Project Scope
 
-Original strengths (retained):
-- Model training and tuning
-- Model comparison
-- Performance metrics and visualization
+Core ML capabilities:
+- Model training and hyperparameter tuning
+- Model comparison across algorithms
+- Predictive performance diagnostics and visualization
 
-New layer (added):
+Experimental analytics capabilities:
 - Hypothesis testing
 - Confidence intervals
 - Power analysis
 - A/B testing simulation
-- Experiment design workflow for decision validation
+- Structured experiment design templates
 
 ---
 
-## Existing ML Work (Retained and Reframed)
+## Credit Risk Modeling and Tree-based Benchmarking
 
-### Practice 1: Tree vs Random Forest on German Credit
+Using German credit risk data, this module builds and evaluates interpretable and ensemble models under a consistent train/test and cross-validation setup.
 
-- Built a pruned decision tree and tuned random forest (`ntree = 1000`, CV-based tuning).
-- Compared test error and ROC-AUC.
-- Interpreted variable importance and model generalization.
+What is covered:
+- Pruned decision tree training and interpretation
+- Random forest tuning with `ntree = 1000`
+- Comparative error-rate and ROC-AUC evaluation
+- Feature importance interpretation for model governance
 
-Visualizations preserved:
-- Pruned tree and split logic
-- Random forest tuning/importance plot
-- Dual ROC curve comparison
+Reference visualizations:
 
 ![Decision Tree](https://user-images.githubusercontent.com/61338647/170880971-42ca57d9-6d02-4146-b560-a29e97df9c0a.png)
 ![Random Forest](https://user-images.githubusercontent.com/61338647/170881126-2330d30e-3180-42cc-88a2-b9439a6a974c.png)
 ![ROC Comparison](https://user-images.githubusercontent.com/61338647/170881241-fd3e720a-194c-4170-8a4a-028697312e55.png)
 
-### Practice 2: Non-linearly Separable Multi-class SVM Simulation
+## Nonlinear Multi-class Classification with Kernel SVM
 
-- Simulated 3-class nonlinear data.
-- Trained SVM with linear, polynomial, and RBF kernels.
-- Showed why nonlinear kernels outperform linear SVM for this geometry.
+This module simulates a non-linearly separable three-class dataset and evaluates linear, polynomial, and RBF kernels to demonstrate boundary flexibility vs. generalization.
 
-Visualizations preserved:
-- Simulated class scatter plot
-- Kernel tuning/decision boundary visual comparisons
+What is covered:
+- Synthetic nonlinear data generation
+- 5-fold CV parameter tuning for each kernel
+- Holdout-set comparison of predictive quality
+- Decision-boundary behavior across kernel choices
+
+Reference visualizations:
 
 ![Three-class Simulation](https://user-images.githubusercontent.com/61338647/170881307-0b6210f9-2a01-4867-a81e-a50e24b691ae.png)
 ![SVM Comparison](https://user-images.githubusercontent.com/61338647/170881531-e071e91e-3a53-4c39-8ae3-35f0170783df.png)
 
-### Practice 3: Repeated-Split Evaluation (kNN vs LDA)
+## Robustness Evaluation via Repeated-split AUC Analysis
 
-- Repeated random split (10 times) with CV tuning.
-- Collected AUC distribution for model robustness comparison.
-- Used boxplots to compare stability and central tendency.
+This module compares kNN and LDA under repeated random train/test splits to evaluate variance, stability, and reliability in out-of-sample performance.
 
-Visualization preserved:
+What is covered:
+- Repeated 70/30 data partitions
+- CV tuning for kNN over candidate `k`
+- AUC collection across repeated runs
+- Distribution-based model robustness comparison
+
+Reference visualization:
 
 ![AUC Boxplot](https://user-images.githubusercontent.com/61338647/170881606-e8ae7c1a-a05a-4d7d-8caa-1e729f532e5f.png)
 
-### Practice 4: User-defined K-fold Training Index Function
+## Stratified K-fold Index Engineering
 
-- Built custom K-fold index generation with class-balance control.
-- Demonstrated fold-wise training index construction and validation.
+This module implements a custom function that generates class-balanced training indices for K-fold workflows, useful when teams need transparent control over fold construction.
+
+What is covered:
+- User-defined fold index generation
+- Class-balance control by construction
+- Reproducibility via explicit seed handling
+- Fold-wise training index output for downstream pipelines
 
 ---
 
-## New: Experimental Evaluation Layer
+## Experimental Evaluation Layer (New)
 
-### 1) A/B Testing Notebook
+### A/B Testing for Model Comparison
 
-New file:
+Notebook:
 - `notebooks/ab_testing_experiment.ipynb`
 
-It treats model comparison as an experiment:
-- **Control**: Logistic Regression
-- **Treatment**: Random Forest
+Experiment setup:
+- Control: Logistic Regression
+- Treatment: Random Forest
 
-Included statistical components:
-1. Hypothesis testing (two-sample t-test)
-2. Confidence intervals (95% CI)
-3. Power analysis (required sample size)
-4. Conversion A/B simulation (z-test, p-value)
-5. Monte Carlo simulation for empirical detection rate
+Statistical components implemented:
+1. Two-sample t-test (hypothesis testing)
+2. 95% confidence intervals
+3. Power analysis and sample-size estimation
+4. Conversion-rate A/B simulation with z-test
+5. Monte Carlo simulation of detection performance
 
-### 2) Conversion Simulation Script
+### New Visualizations from Experimental Analysis
 
-New file:
+Model score distribution:
+
+![A/B Accuracy Distribution](assets/ab_accuracy_distribution.png)
+
+Mean performance with uncertainty bands:
+
+![A/B Mean CI](assets/ab_mean_ci.png)
+
+Simulated conversion lift distribution:
+
+![A/B Conversion Lift](assets/ab_conversion_lift_distribution.png)
+
+### Conversion Simulation Utility
+
+Script:
 - `simulate_user_conversion.py`
 
-Command-line example:
+Example:
 
 ```bash
 python simulate_user_conversion.py \
@@ -100,21 +124,22 @@ python simulate_user_conversion.py \
 ```
 
 Outputs:
-- Observed conversion lift
+- Observed lift
 - z-statistic and one-sided p-value
-- Wilson 95% confidence intervals
-- Empirical power from repeated simulation
+- 95% confidence intervals
+- Empirical power estimate from simulation
 
-### 3) Experiment Design Playbook
+### Reusable Experiment Playbook
 
-New file:
+Template:
 - `experiment_design.md`
 
-Provides a reusable checklist/template for:
-- objective and hypothesis definition
-- metric and guardrail planning
-- sample size/power planning
-- statistical analysis and ship/no-ship decision criteria
+Includes:
+- Objective and hypothesis framing
+- Primary + guardrail metric design
+- Statistical test planning
+- Power/sample-size planning
+- Decision gates for rollout decisions
 
 ---
 
@@ -124,8 +149,8 @@ Provides a reusable checklist/template for:
 2. Define metrics
 3. Run experiment
 4. Evaluate statistical significance
-5. Measure confidence intervals
-6. Validate sample size and power assumptions
+5. Quantify confidence intervals
+6. Validate power and sample-size assumptions
 
 ---
 
@@ -138,6 +163,10 @@ Machine_Learning_Methodology/
 ├── Practice_3.R
 ├── Practice_4.R
 ├── churn.csv
+├── assets/
+│   ├── ab_accuracy_distribution.png
+│   ├── ab_mean_ci.png
+│   └── ab_conversion_lift_distribution.png
 ├── experiment_design.md
 ├── notebooks/
 │   └── ab_testing_experiment.ipynb
@@ -147,38 +176,23 @@ Machine_Learning_Methodology/
 
 ---
 
-## Environment Setup
+## Environment
 
-### R workflow (existing)
-- Main packages: `caret`, `rattle`, `pROC`, `ggplot2`, `e1071`, `simstudy`
+R stack (existing scripts):
+- `caret`, `rattle`, `pROC`, `ggplot2`, `e1071`, `simstudy`
 
-### Python experimentation layer (new)
+Python stack (experimentation layer):
 
 ```bash
-pip install numpy pandas scipy statsmodels matplotlib seaborn jupyter
+pip install numpy pandas scipy matplotlib seaborn jupyter
 ```
 
 ---
 
-## Why This Extension Matters
+## Professional Relevance
 
-This project now demonstrates both:
-- **Machine Learning modeling capability**
-- **Experimentation and statistical decision capability**
-
-Core capability coverage:
-- Experimental Design
-- A/B Testing
-- Statistical Inference
-- Confidence Intervals
-- Power Analysis
-
-This is especially useful for data, analytics, and AI-enablement roles where process changes must be validated with statistically defensible evidence.
-
-## Interview Positioning (Company-neutral)
-
-How to describe this project in interviews:
-- Built an end-to-end ML evaluation workflow that combines model performance metrics with formal statistical testing.
-- Added reusable experiment templates and simulation tools so teams can independently validate workflow changes.
-- Framed model comparisons as controlled experiments (control vs treatment) and reported p-values, confidence intervals, and power.
-- Emphasized decision quality: ship/no-ship recommendations based on effect size, uncertainty, and guardrail metrics.
+This repository demonstrates the ability to combine machine learning evaluation with statistical decision frameworks, including:
+- experimental design and A/B testing
+- inference and uncertainty quantification
+- repeatable analytical templates for team adoption
+- evidence-based ship/no-ship evaluation logic
